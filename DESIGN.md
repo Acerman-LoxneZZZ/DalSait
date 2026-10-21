@@ -183,6 +183,10 @@ Navigation sits directly over the hero photograph, using compact Manrope text an
 
 A thin vertical seam fills orange with reading progress. Passed stops receive orange dots and a diffuse small halo. Stop titles are serif; day/distance details and supporting text remain sans-serif. On phones the timeline follows the route introduction.
 
+### Story Restart
+
+The closing invitation uses a native range input inside a pine-and-paper track. A full drag turns the arrow upward and fills the track, then two warm-paper panels close and reopen over the opening photograph. Partial pointer gestures return to zero; arrow keys, End and Enter support keyboard use. Focus returns to the opening heading. The control resets after completion and uses an immediate return instead of the shutter sequence for reduced motion. Without JavaScript it remains a regular link to the beginning.
+
 ### Story and Film Dialogs
 
 The story sheet pairs a photo with paper copy, then stacks on phones. The location follows the title. Native dialogs preserve modal focus behavior and return focus to the opener when closed. The film is a full-screen photographic sequence with explicit pause, previous and next controls. Reduced-motion users start with playback paused.

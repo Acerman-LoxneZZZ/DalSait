@@ -167,3 +167,9 @@ $('[data-film-pause]').addEventListener('click',()=>{filmPaused=!filmPaused;if(!
 filmDialog.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();changeFilm(1)}if(e.key==='ArrowLeft'){e.preventDefault();changeFilm(-1)}if(e.key===' '&&e.target.tagName!=='BUTTON'){e.preventDefault();filmPaused=!filmPaused;updatePause()}});
 filmDialog.addEventListener('close',()=>{cancelAnimationFrame(filmRaf);filmPreviousFocus?.focus({preventScroll:true})});
 document.addEventListener('visibilitychange',()=>{filmLastTime=0;if(!document.hidden){updateScroll();startFrame()}});
+document.addEventListener('dal:restart',()=>{
+ heroCurrentProgress=heroTargetProgress=0;
+ updateScroll();
+ if(!reducedMotion)renderHero();
+ startFrame();
+});

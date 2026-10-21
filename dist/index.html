@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="assets/cormorant.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="hero-motion.css">
-  <script src="app.js?v=20261021-hero-scroll" defer></script>
+  <link rel="stylesheet" href="story-slider.css">
+  <script src="app.js?v=20261021-story-slider" defer></script>
+  <script src="story-slider.js?v=20261021" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -39,7 +41,7 @@
         <a class="header-link" href="#places">Навстречу миру <svg><use href="#arrow-up"/></svg></a>
       </header>
       <div class="hero-content">
-        <h1 id="hero-title"><span class="hero-line">За пределами</span><span class="hero-line"><em>привычного.</em></span></h1>
+        <h1 id="hero-title" tabindex="-1"><span class="hero-line">За пределами</span><span class="hero-line"><em>привычного.</em></span></h1>
         <p>Мир больше, чем кажется.<br>Давай почувствуем его вместе.</p>
         <a class="button button-paper" href="#places">Найти своё место <span class="button-icon"><svg><use href="#arrow-up"/></svg></span></a>
       </div>
@@ -99,9 +101,23 @@
       <div class="journal-bottom section-shell"><span>Сохраняй моменты, а не координаты.</span><span class="handwritten">Твоя история ещё впереди.</span></div>
     </section>
 
-    <section class="outro" id="start" aria-labelledby="outro-title"><div class="outro-decoration" aria-hidden="true"><svg><use href="#star"/></svg></div><div class="outro-main"><h2 id="outro-title">Мир ждёт.<br><em>А ты?</em></h2><p>Необязательно знать весь путь.<br>Достаточно почувствовать, куда хочется.</p><a class="button button-paper" href="#places">Начать свою историю <span class="button-icon"><svg><use href="#arrow-up"/></svg></span></a></div><div class="outro-photo"><img src="assets/forest.jpg" alt="Солнечный свет проходит сквозь высокие деревья" loading="lazy"><span class="handwritten">Увидимся где-то в ДАЛИ.</span></div></section>
+    <section class="outro" id="start" aria-labelledby="outro-title"><div class="outro-decoration" aria-hidden="true"><svg><use href="#star"/></svg></div><div class="outro-main"><h2 id="outro-title">Мир ждёт.<br><em>А ты?</em></h2><p>Необязательно знать весь путь.<br>Достаточно почувствовать, куда хочется.</p>
+      <div class="story-restart" data-story-restart hidden>
+        <div class="story-slider" data-story-slider>
+          <span class="story-slider-fill" aria-hidden="true"></span>
+          <span class="story-slider-label" aria-hidden="true">Начать свою историю</span>
+          <span class="story-slider-done" aria-hidden="true">Снова навстречу миру</span>
+          <span class="story-slider-thumb" aria-hidden="true"><svg><use href="#arrow"/></svg></span>
+          <input class="story-slider-input" type="range" min="0" max="100" step="1" value="0" aria-label="Начать свою историю: вернуться к началу" aria-describedby="story-slider-help">
+        </div>
+        <p class="story-slider-help" id="story-slider-help">Сдвинь вправо — и снова в путь.</p>
+        <span class="story-slider-status" role="status" aria-live="polite"></span>
+      </div>
+      <a class="button button-paper" href="#" data-story-fallback>Начать свою историю <span class="button-icon"><svg><use href="#arrow-up"/></svg></span></a>
+    </div><div class="outro-photo"><img src="assets/forest.jpg" alt="Солнечный свет проходит сквозь высокие деревья" loading="lazy"><span class="handwritten">Увидимся где-то в ДАЛИ.</span></div></section>
     <footer class="footer"><a class="logo" href="#">ДАЛЬ<span class="logo-dot">.</span></a><p>Ближе к миру. Ближе к себе.</p><span>Авторский концепт · 2026</span><a href="#" class="back-top">Наверх <svg><use href="#arrow-up"/></svg></a></footer>
   </main>
+  <div class="story-return" aria-hidden="true"><div class="story-return-panel story-return-top"></div><div class="story-return-panel story-return-bottom"></div><span class="story-return-mark logo">ДАЛЬ<span class="logo-dot">.</span></span></div>
 
   <dialog class="story-dialog" id="story-dialog" aria-labelledby="story-title"><div class="dialog-layout"><div class="dialog-visual"><img id="story-image" src="assets/dolomites.jpg" alt=""><div class="story-photo-shade"></div><span class="dialog-photo-caption" id="story-caption"></span></div><div class="dialog-copy"><button class="dialog-close round-button" data-close aria-label="Закрыть историю"><svg><use href="#close"/></svg></button><h2 id="story-title"></h2><span class="story-location" id="story-location"></span><p id="story-description"></p><div class="story-details" id="story-details"></div><p class="story-disclaimer">Редакционная идея путешествия — вдохновение для твоего собственного маршрута.</p><button class="text-link" data-story-next>Ещё одна история <svg><use href="#arrow"/></svg></button></div></div></dialog>
   <dialog class="film-dialog" id="film-dialog" aria-labelledby="film-title"><img id="film-full-image" src="assets/hero.jpg" alt=""><div class="film-full-shade"></div><div class="film-top"><span class="logo">ДАЛЬ.</span><button class="round-button" data-film-close aria-label="Закрыть фотоисторию"><svg><use href="#close"/></svg></button></div><div class="film-text"><span id="film-count">1 / 4</span><h2 id="film-title">Сначала — остановиться.</h2><p id="film-subtitle">Оставить шум по ту сторону дороги.</p></div><div class="film-bottom"><button class="round-button" data-film-prev aria-label="Предыдущий кадр"><svg class="arrow-left"><use href="#arrow"/></svg></button><div class="film-bars" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div><button class="film-pause" data-film-pause>Пауза</button><button class="round-button" data-film-next aria-label="Следующий кадр"><svg><use href="#arrow"/></svg></button></div></dialog>

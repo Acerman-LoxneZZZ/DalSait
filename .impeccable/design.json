@@ -200,6 +200,11 @@
     ],
     "motion": [
       {
+        "name": "story-restart",
+        "value": "460ms close / 700ms reveal",
+        "purpose": "A completed range gesture closes paper shutters, returns to the first photograph and resets the control; incomplete drags settle back and reduced motion jumps directly."
+      },
+      {
         "name": "hero-scroll-sequence",
         "value": "280svh desktop / 260svh mobile; reversible cross-dissolve",
         "purpose": "Scrub the four film photographs with natural scrolling; keep the editorial title still and use a static opening for reduced motion."
