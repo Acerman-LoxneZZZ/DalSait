@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-11T00:00:00Z",
+  "generatedAt": "2026-10-21T00:00:00Z",
   "title": "Design System: ДАЛЬ",
   "extensions": {
     "colorMeta": {
@@ -199,6 +199,11 @@
       }
     ],
     "motion": [
+      {
+        "name": "hero-scroll-sequence",
+        "value": "280svh desktop / 260svh mobile; reversible cross-dissolve",
+        "purpose": "Scrub the four film photographs with natural scrolling; keep the editorial title still and use a static opening for reduced motion."
+      },
       {
         "name": "ease",
         "value": "cubic-bezier(.16,1,.3,1)",

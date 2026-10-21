@@ -1,6 +1,12 @@
 const $ = (s,root=document) => root.querySelector(s);
 const $$ = (s,root=document) => [...root.querySelectorAll(s)];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const filmFrames=[
+ {image:'hero',title:'Сначала — остановиться.',subtitle:'Оставить шум по ту сторону дороги.',alt:'Тихое озеро среди гор в золотом свете заката'},
+ {image:'mountains',title:'Вдохнуть чуть глубже.',subtitle:'Понять, сколько мира помещается в одном мгновении.',alt:'Солнечные лучи над бескрайней горной долиной'},
+ {image:'iceland',title:'Почувствовать настоящее.',subtitle:'Ветер. Вода. И удивительная простота быть здесь.',alt:'Водопад среди зелёных склонов Исландии'},
+ {image:'night',title:'Забрать это с собой.',subtitle:'Самые важные места остаются внутри.',alt:'Звёздное небо над заснеженными горами'}
+];
 const places = [
  {name:'Япония',country:'Япония · искусство замечать',image:'japan',title:'Красота в деталях.',caption:'У каждого мгновения свой смысл.',description:'Проснуться раньше города. Пройти по тихой улице, заглянуть в маленькую чайную, заметить свет на старом дереве. Эта история о внимании к вещам, мимо которых обычно проходят.',details:[['Ритм','Прогулки, чайные и тихие сады'],['Настроение','Внимание к маленьким деталям'],['Идея пути','Киото → Нара → собственное открытие']]},
  {name:'Намибия',country:'Намибия · песчаная история',image:'desert',title:'Остаться наедине с миром.',caption:'Когда горизонт ничем не ограничен.',description:'У песка есть свой голос. На рассвете он становится розовым, днём — золотым, к вечеру — почти красным. Здесь можно долго смотреть вдаль и наконец услышать собственные мысли.',details:[['Ритм','Рассветы, дороги и длинные паузы'],['Настроение','Простор и полная тишина'],['Идея пути','Дюны Соссусфлей → побережье']]},
@@ -51,11 +57,40 @@ if(!reducedMotion){
 const route=$('.timeline');
 const stops=$$('.timeline-stop');
 const hero=$('.hero');
+const heroScroll=$('.hero-scroll');
 const heroImage=$('.hero-landscape');
+const heroScenes=$$('.hero-scene');
+let heroTargetProgress=0,heroCurrentProgress=0,heroInView=true,heroDescriptionIndex=0;
 const interlude=$('.landscape-interlude');
 const interludeImage=$('.landscape-interlude>img');
 const readingProgress=$('.reading-progress');
 function clamp(n,min=0,max=1){return Math.min(max,Math.max(min,n))}
+function renderHero(){
+ const position=heroCurrentProgress*(heroScenes.length-1);
+ const from=Math.min(Math.floor(position),heroScenes.length-1);
+ const to=Math.min(from+1,heroScenes.length-1);
+ const fraction=clamp((position-from-.12)/.76);
+ const mix=fraction*fraction*(3-2*fraction);
+ heroScenes.forEach((image,index)=>{
+  const isBase=index===from;
+  const isIncoming=index===to&&to!==from;
+  const ready=image.complete&&image.naturalWidth>0;
+  // Keep an opaque base under the incoming frame: no dark flash during a dissolve.
+  const opacity=isBase?1:isIncoming&&ready?mix:0;
+  image.style.opacity=String(opacity);
+  if(isBase||isIncoming){
+   const scale=isBase?1.035+mix*.045:1.10-mix*.065;
+   const shift=isBase?-mix*9:(1-mix)*12;
+   image.style.transform=`translate3d(0,${shift.toFixed(2)}px,0) scale(${scale.toFixed(4)})`;
+  }
+  image.style.willChange=heroInView&&(isBase||isIncoming)?'transform, opacity':'auto';
+ });
+ const descriptionIndex=mix>=.5?to:from;
+ if(descriptionIndex!==heroDescriptionIndex){
+  heroDescriptionIndex=descriptionIndex;
+  heroImage.setAttribute('aria-label',filmFrames[descriptionIndex].alt);
+ }
+}
 function updateScroll(){
  const rect=wheelSection.getBoundingClientRect();
  const travel=wheelSection.offsetHeight-wheelStage.offsetHeight;
@@ -68,24 +103,36 @@ function updateScroll(){
  stops.forEach(stop=>stop.classList.toggle('is-passed',stop.getBoundingClientRect().top<innerHeight*.67));
  readingProgress.style.transform=`scaleX(${clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))})`;
  if(!reducedMotion){
-  const heroTop=hero.getBoundingClientRect().top;
-  if(heroTop>-hero.offsetHeight)heroImage.style.transform=`translateY(${-heroTop*.18}px)`;
+  const openingRect=heroScroll.getBoundingClientRect();
+  const heroRect=hero.getBoundingClientRect();
+  const inset=parseFloat(getComputedStyle(hero).top)||0;
+  const openingTravel=Math.max(1,heroScroll.offsetHeight-hero.offsetHeight-inset*2);
+  heroTargetProgress=clamp(-openingRect.top/openingTravel);
+  heroInView=heroRect.bottom>0&&heroRect.top<innerHeight;
+  if(!heroInView)heroCurrentProgress=heroTargetProgress;
   const ir=interlude.getBoundingClientRect();
   if(ir.top<innerHeight&&ir.bottom>0)interludeImage.style.transform=`translateY(${(innerHeight*.5-ir.top-ir.height*.5)*.13}px)`;
  }
 }
 function frame(){
+ if(document.hidden){ticking=false;return;}
  currentRotation=reducedMotion?targetRotation:currentRotation+(targetRotation-currentRotation)*.075;
  wheelStage.style.setProperty('--wheel-rotation',`${currentRotation.toFixed(3)}deg`);
  const closest=angles.reduce((best,angle,i)=>Math.abs(angle+currentRotation)<Math.abs(angles[best]+currentRotation)?i:best,0);
  updateCaption(closest);
- if(Math.abs(currentRotation-targetRotation)>.015){requestAnimationFrame(frame)}else{ticking=false}
+ if(!reducedMotion){
+  heroCurrentProgress+=(heroTargetProgress-heroCurrentProgress)*.1;
+  if(Math.abs(heroCurrentProgress-heroTargetProgress)<.0001)heroCurrentProgress=heroTargetProgress;
+  renderHero();
+ }
+ if(Math.abs(currentRotation-targetRotation)>.015||Math.abs(heroTargetProgress-heroCurrentProgress)>.0001){requestAnimationFrame(frame)}else{ticking=false}
 }
 function startFrame(){if(!ticking){ticking=true;requestAnimationFrame(frame)}}
 let scrollQueued=false;
 addEventListener('scroll',()=>{if(scrollQueued)return;scrollQueued=true;requestAnimationFrame(()=>{scrollQueued=false;updateScroll();startFrame()})},{passive:true});
 addEventListener('resize',()=>{updateScroll();startFrame()});
 updateScroll();startFrame();
+if(!reducedMotion)heroScenes.forEach(image=>image.decode().then(()=>{updateScroll();startFrame()}).catch(()=>{}));
 
 const storyDialog=$('#story-dialog');
 let storyIndex=2, previousFocus;
@@ -107,12 +154,6 @@ storyDialog.addEventListener('click',e=>{if(e.target===storyDialog){const r=stor
 storyDialog.addEventListener('close',()=>previousFocus?.focus({preventScroll:true}));
 
 const filmDialog=$('#film-dialog');
-const filmFrames=[
- {image:'hero',title:'Сначала — остановиться.',subtitle:'Оставить шум по ту сторону дороги.'},
- {image:'mountains',title:'Вдохнуть чуть глубже.',subtitle:'Понять, сколько мира помещается в одном мгновении.'},
- {image:'iceland',title:'Почувствовать настоящее.',subtitle:'Ветер. Вода. И удивительная простота быть здесь.'},
- {image:'night',title:'Забрать это с собой.',subtitle:'Самые важные места остаются внутри.'}
-];
 let filmIndex=0,filmElapsed=0,filmPaused=false,filmLastTime=0,filmRaf=0,filmPreviousFocus;
 function renderFilm(){const f=filmFrames[filmIndex];const image=$('#film-full-image');image.src=`assets/${f.image}.jpg`;image.alt=f.title;image.style.animation='none';void image.offsetWidth;image.style.animation='';$('#film-title').textContent=f.title;$('#film-subtitle').textContent=f.subtitle;$('#film-count').textContent=`${filmIndex+1} / 4`;$$('.film-bars i').forEach((bar,i)=>bar.style.transform=`scaleX(${i<filmIndex?1:0})`)}
 function changeFilm(direction){filmIndex=(filmIndex+direction+filmFrames.length)%filmFrames.length;filmElapsed=0;renderFilm()}
@@ -125,4 +166,4 @@ $('[data-film-next]').addEventListener('click',()=>changeFilm(1));
 $('[data-film-pause]').addEventListener('click',()=>{filmPaused=!filmPaused;if(!filmPaused&&filmElapsed>=6500)changeFilm(1);updatePause()});
 filmDialog.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();changeFilm(1)}if(e.key==='ArrowLeft'){e.preventDefault();changeFilm(-1)}if(e.key===' '&&e.target.tagName!=='BUTTON'){e.preventDefault();filmPaused=!filmPaused;updatePause()}});
 filmDialog.addEventListener('close',()=>{cancelAnimationFrame(filmRaf);filmPreviousFocus?.focus({preventScroll:true})});
-document.addEventListener('visibilitychange',()=>{filmLastTime=0});
+document.addEventListener('visibilitychange',()=>{filmLastTime=0;if(!document.hidden){updateScroll();startFrame()}});

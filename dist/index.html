@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="assets/manrope.css">
   <link rel="stylesheet" href="assets/cormorant.css">
   <link rel="stylesheet" href="style.css">
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="hero-motion.css">
+  <script src="app.js?v=20261021-hero-scroll" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -23,8 +24,14 @@
     <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
   </defs></svg>
   <main id="main">
+    <div class="hero-scroll">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-landscape"><img src="assets/hero.jpg" alt="Тихое озеро среди гор в золотом свете заката" fetchpriority="high"></div>
+      <div class="hero-landscape" role="img" aria-label="Тихое озеро среди гор в золотом свете заката">
+        <img class="hero-scene" src="assets/hero.jpg" alt="" aria-hidden="true" fetchpriority="high">
+        <img class="hero-scene" src="assets/mountains.jpg" alt="" aria-hidden="true" decoding="async">
+        <img class="hero-scene" src="assets/iceland.jpg" alt="" aria-hidden="true" decoding="async">
+        <img class="hero-scene" src="assets/night.jpg" alt="" aria-hidden="true" decoding="async">
+      </div>
       <div class="hero-shade"></div>
       <header class="header">
         <a href="#" class="logo" aria-label="ДАЛЬ — на главную">ДАЛЬ<span class="logo-dot">.</span></a>
@@ -43,6 +50,7 @@
       </div>
       <span class="hero-frame-mark" aria-hidden="true">Почувствовать. Запомнить. Вернуться.</span>
     </section>
+    </div>
 
     <section class="intro section-shell" id="intro" aria-labelledby="intro-title">
       <div class="intro-symbol" aria-hidden="true"><svg><use href="#star"/></svg></div>

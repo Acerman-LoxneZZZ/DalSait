@@ -142,6 +142,8 @@ The serif is open and expressive, often italic within a headline or handwritten-
 
 The shared desktop shell is capped at 1280px with 56px side gutters. At 1050px and below the gutters become 36px; at 700px and below they become 22px. The hero is an inset photographic frame, with a viewport-relative height and enough minimum height to keep its copy and film preview apart.
 
+The opening uses a sticky photographic sequence (280svh desktop, 260svh mobile) with four frames shared with the film: lake, mountains, waterfall and night sky. Normal scrolling scrubs reversible cross-dissolves and subtle image scaling while the title and controls remain stationary. Only the active pair is promoted for compositing; the shared animation loop settles when scrolling stops and suspends in hidden tabs. Without JavaScript or with reduced motion, the opening remains a single ordinary photographic section.
+
 Desktop editorial sections use asymmetric or paired columns: the intro has a narrow symbol column, the itinerary pairs a sticky introduction with a vertical timeline, and the closing section pairs text with a mounted photo. On mobile these become a single reading column. The journal stays horizontally scrollable, with snap alignment and working previous/next controls.
 
 The destination wheel is a shared circular composition, not independent tiles. Its track and rotor share a center at `calc(55% + var(--radius))`; radius responds to viewport size (610px default, 560px tablet, 455px mobile, 720px tall desktop, 730px wide desktop). Its sticky chapter lasts 190svh desktop and 165svh mobile. Reduced motion makes it a single-viewport chapter.
